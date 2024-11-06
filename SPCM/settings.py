@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-kj4maq(_q2s%9tq#cuq-c8*0fxd%!0u+d$-i*5gd%7absy2do8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.99.22.17','localhost','127.0.0.1']
 
 
 # Application definition
@@ -88,10 +88,10 @@ WSGI_APPLICATION = 'SPCM.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'spcm',  
-        'USER': 'root', 
-        'PASSWORD': '',  
-        'HOST': 'localhost',    
+        'NAME': 'spcm2',  
+        'USER': 'admin', 
+        'PASSWORD': 'root',  
+        'HOST':'192.168.1.131',    
         'PORT': '3306',         
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
@@ -195,3 +195,6 @@ EMAIL_USE_TLS = True                   # Habilitar TLS
 EMAIL_HOST_USER = 'clayens82@gmail.com' # Tu correo electrónico
 EMAIL_HOST_PASSWORD = 'lgfc mzle bnrw zocx'   # Contraseña del correo electrónico
 DEFAULT_FROM_EMAIL = 'clayens82@gmail.com'  # Dirección del remitente
+
+STATIC_ROOT = '/web/spcm/SPCM_BACK/static/'
+MEDIA_ROOT = '/web/spcm/SPCM_BACK/media/'
