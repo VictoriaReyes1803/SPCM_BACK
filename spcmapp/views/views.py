@@ -53,6 +53,8 @@ class Maquinaget(generics.ListAPIView):
     queryset = Maquina.objects.filter(estado=True)  
     serializer_class = MaquinaSerializer
     permission_classes = [IsAuthenticated]  
+    def get_queryset(self):
+        return Maquina.objects.filter(estado=True).order_by('maquina')
 
     def get(self, request, *args, **kwargs):
         maquinas = self.get_queryset()
@@ -115,7 +117,7 @@ class UploadPDFView(generics.ListCreateAPIView):
                     'ContentDisposition': 'inline',
                     'ACL': 'public-read'  
                 })
-                file_url = f"https://nyc3.digitaloceanspaces.com/clayenss/{settings.SPACES_BUCKET_NAME}/{file_name}"
+                file_url = f"https://nyc3.digitaloceanspaces.com/clayens/{settings.SPACES_BUCKET_NAME}/{file_name}"
                 print(file_url)
 
                 return Response( {'file_url': file_url}
@@ -140,7 +142,7 @@ class ListPDFView(APIView):
             
             
             print(f"Listando objetos en el bucket: {settings.SPACES_BUCKET_NAME}")
-            response = client.list_objects_v2(Bucket='clayenss')
+            response = client.list_objects_v2(Bucket='clayens')
             print(f"Respuesta de list_objects_v2: {response}")
             if 'Contents' in response:
                 pdf_files = [obj['Key'] for obj in response['Contents'] if obj['Key'].endswith('.pdf')]
@@ -189,7 +191,7 @@ class UpdatePDFView(generics.GenericAPIView):
                 'ACL': 'public-read'
             })
             
-            file_url = f"https://nyc3.digitaloceanspaces.com/clayenss/{settings.SPACES_BUCKET_NAME}/{file_name}"
+            file_url = f"https://nyc3.digitaloceanspaces.com/clayens/{settings.SPACES_BUCKET_NAME}/{file_name}"
             print(file_url)
             
             return Response({'file_url': file_url}, status=status.HTTP_200_OK)
@@ -246,3 +248,9 @@ class DeletePDFView(APIView):
             return Response({'error': f'Error del cliente {error_code}: {error_message}'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+# class FormatoView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def get(self, request):
+        
+    

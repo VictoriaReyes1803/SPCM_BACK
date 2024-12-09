@@ -91,15 +91,13 @@ DATABASES = {
         'NAME': 'spcm',  
         'USER': 'root', 
         'PASSWORD': '',  
-        'HOST': 'localhost',    
+        'HOST':'localhost',    
         'PORT': '3306',         
-        
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
         },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -172,10 +170,10 @@ AUTH_USER_MODEL = 'spcmapp.User'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-AWS_ACCESS_KEY_ID = 'DO00H69G2ZGQJC6LBUUN'
-AWS_SECRET_ACCESS_KEY = 'rHtA3ByDGGBCH3t27LzbkGwrl4wWHZGUYK+cPD1d8z0'
-AWS_STORAGE_BUCKET_NAME = 'clayenss'
-AWS_S3_ENDPOINT_URL = 'https://clayenss.nyc3.digitaloceanspaces.com'
+AWS_ACCESS_KEY_ID = 'DO00XRU422JJ7M3JAQ2K'
+AWS_SECRET_ACCESS_KEY = 'qFz7ent27eWx95lrnM3xRRCn0H9I/g+ggx3+fPzCISQ'
+AWS_STORAGE_BUCKET_NAME = 'clayens'
+AWS_S3_ENDPOINT_URL = 'https://clayens.nyc3.digitaloceanspaces.com'
 AWS_S3_REGION_NAME = 'nyc3'
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
@@ -183,10 +181,10 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_LOCATION = 'media'
 
 SPACES_REGION = 'nyc3'
-SPACES_ENDPOINT_URL = 'https://clayenss.nyc3.digitaloceanspaces.com'
-SPACES_ACCESS_KEY_ID = 'DO00H69G2ZGQJC6LBUUN'
-SPACES_SECRET_ACCESS_KEY = 'rHtA3ByDGGBCH3t27LzbkGwrl4wWHZGUYK+cPD1d8z0'
-SPACES_BUCKET_NAME = 'clayenss'
+SPACES_ENDPOINT_URL = 'https://clayens.nyc3.digitaloceanspaces.com'
+SPACES_ACCESS_KEY_ID = 'DO00XRU422JJ7M3JAQ2K'
+SPACES_SECRET_ACCESS_KEY = 'qFz7ent27eWx95lrnM3xRRCn0H9I/g+ggx3+fPzCISQ'
+SPACES_BUCKET_NAME = 'clayens'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

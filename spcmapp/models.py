@@ -78,12 +78,12 @@ class Reporte(models.Model):
     formato = models.CharField(max_length=100)
     fecha = models.DateTimeField(auto_now_add=True)
     producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    comentario = models.CharField(max_length=100, null=True)
     producto_maquina = models.ForeignKey('Producto_maquina', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True, null=True, blank=True)    
 
     def __str__(self):
         return f"Reporte {self.id} de {self.user.email}"
-
 
 class Actividad(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -144,3 +144,18 @@ class Producto_maquina(models.Model):
     
     def __str__(self):
         return self.Ruta
+
+class Sugerencias(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sugerencia = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True, null=True, blank=True)
+    
+    def __str__(self):
+        return f"Sugerencia {self.id} por {self.user.email}"
+
+class Formatos(models.Model):
+    formato = models.CharField(max_length=150)
+    
+    def __str__(self):
+        return f"Formato {self.formato}"

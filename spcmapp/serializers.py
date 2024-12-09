@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 from django.contrib.auth.hashers import make_password
-from .models import User, Producto_maquina, Producto, Maquina, Reporte
+from .models import User, Producto_maquina, Producto, Maquina, Reporte, Sugerencias, Formatos
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,7 +58,7 @@ class ReporteSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Reporte
-        fields = ['id','user','producto','producto_id', 'producto_maquina','producto_maquina_id','ruta', 'content','fecha','formato']
+        fields = ['id','user','producto','producto_id', 'producto_maquina','producto_maquina_id','is_active','ruta', 'content','fecha','formato', 'comentario']
         read_only_fields = ['fecha', 'user']
         
         
@@ -78,3 +78,13 @@ class ResetPasswordSerializer(serializers.Serializer):
 class ResetPasswordResponseSerializer(serializers.Serializer):
     success = serializers.BooleanField()
     message = serializers.CharField()
+    
+class SugerenciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sugerencias
+        fields = ['id', 'user_id', 'sugerencia', 'fecha', 'is_active']
+        
+class FormatoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Formatos
+        fiels = ['id', 'formato']
