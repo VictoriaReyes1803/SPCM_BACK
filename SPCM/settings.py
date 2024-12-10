@@ -88,10 +88,10 @@ WSGI_APPLICATION = 'SPCM.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'spcm',  
-        'USER': 'root', 
-        'PASSWORD': '',  
-        'HOST':'localhost',    
+        'NAME': 'spcm2',  
+        'USER': 'admin', 
+        'PASSWORD': 'root',  
+        'HOST':'192.168.1.131',    
         'PORT': '3306',         
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',

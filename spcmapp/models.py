@@ -159,3 +159,14 @@ class Formatos(models.Model):
     
     def __str__(self):
         return f"Formato {self.formato}"
+
+class Resinas(models.Model):
+    codigo_interno = models.CharField(max_length=150)
+    resina = models.CharField(max_length=150)
+    densidad_de_bulto = models.FloatField( null=True)
+    temperatura_secado = models.FloatField(null=True)
+    tiempo_secado = models.FloatField()
+    densidad = models.FloatField(null=True)
+    
+    def __str__(self):
+        return f"Resina {self.resina}"

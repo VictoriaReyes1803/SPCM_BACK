@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 from django.contrib.auth.hashers import make_password
-from .models import User, Producto_maquina, Producto, Maquina, Reporte, Sugerencias, Formatos
+from .models import User, Producto_maquina, Producto, Maquina, Reporte, Sugerencias, Formatos, Resinas
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -88,3 +88,9 @@ class FormatoSerializer(serializers.ModelSerializer):
     class Meta:
         model= Formatos
         fiels = ['id', 'formato']
+        
+class ResinaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resinas
+        fields = ['codigo_interno', 'resina', 'densidad_de_bulto', 'temperatura_secado', 'tiempo_secado', 'densidad']
+        

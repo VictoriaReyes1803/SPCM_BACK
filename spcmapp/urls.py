@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from .views.sugerencia_views import SugerenciaAPIView, SugerenciaDetailAPIView
-from .views.views import Productos, ProductoMaquina, Maquinaget, ReporteView, ReporteDetailView, UploadPDFView, ListPDFView, AllReportsView, UpdatePDFView, DeletePDFView
+from .views.views import Productos, ProductoMaquina, Maquinaget, ReporteView, ReporteDetailView, UploadPDFView, ListPDFView, AllReportsView, UpdatePDFView, DeletePDFView, ResinaListView
 from .views.auth_views import RegisterView, LoginView, UserProfileView ,LogoutView, SendRecoveryEmailView, ResetPasswordView, reset_password_view
 from .views.user_views import user_views
 from django.conf.urls.static import static
@@ -27,7 +27,7 @@ urlpatterns = [
     path('pdf/delete/<int:id_report>/', DeletePDFView.as_view(), name='delete-pdf'),
     path('sugerencia/', SugerenciaAPIView.as_view(), name='sugerencia_list_create'),
     path('sugerencia/<int:pk>/', SugerenciaDetailAPIView.as_view(), name='sugerencia_detail'),
-    
+    path('resinas/', ResinaListView.as_view(), name='resinas-list-create'),
     
     path('users/', user_views.get_users, name='get_users'),
     path('users/<int:user_id>/', user_views.get_user, name='get_user'),

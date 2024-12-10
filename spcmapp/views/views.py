@@ -9,8 +9,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import generics
-from ..models import  Producto, Producto_maquina, Maquina, Reporte
-from ..serializers import  ProductoSerializer, MaquinaSerializer, ProductoMaquinaSerializer, ReporteSerializer
+from ..models import  Producto, Producto_maquina, Maquina, Reporte, Resinas
+from ..serializers import  ProductoSerializer, MaquinaSerializer, ProductoMaquinaSerializer, ReporteSerializer, ResinaSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import SuspiciousFileOperation
@@ -254,3 +254,22 @@ class DeletePDFView(APIView):
 #     def get(self, request):
         
     
+class ResinaListView(generics.ListCreateAPIView):
+    queryset = Resinas.objects.all()
+    serializer_class = ResinaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Resinas.objects.all().order_by('resina')
+
+    def get(self, request, *args, **kwargs):
+        resinas = self.get_queryset()
+        serializer = self.get_serializer(resinas, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
