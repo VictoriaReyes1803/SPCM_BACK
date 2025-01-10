@@ -75,23 +75,15 @@ class Reporte(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ruta = models.CharField(max_length=150)
     content = models.JSONField()  
-    formato = models.CharField(max_length=100)
     fecha = models.DateTimeField(auto_now_add=True)
     producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    comentario = models.CharField(max_length=100, null=True)
+    maquina = models.ForeignKey('Maquina', on_delete=models.CASCADE, null=True, blank=True)
+    comentario = models.CharField(max_length=100, null=True, blank=True)
     producto_maquina = models.ForeignKey('Producto_maquina', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True, null=True, blank=True)    
 
     def __str__(self):
         return f"Reporte {self.id} de {self.user.email}"
-
-class Actividad(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    reporte = models.ForeignKey(Reporte, on_delete=models.CASCADE)
-    act = models.TextField()
-
-    def __str__(self):
-        return f"Actividad {self.id} por {self.user.email}"
 
 class Cliente(models.Model):
     codigo = models.CharField(max_length=10)
@@ -104,6 +96,7 @@ class Maquina(models.Model):
     maquina = models.CharField(max_length=100)
     estado = models.BooleanField(default=True, null=True, blank=True)
     Formato = models.CharField(max_length=100, null=True, blank=True)
+    planta = models.CharField(max_length=100, null=True, blank=True)
     
     def __str__(self):
         return self.codigo
@@ -170,3 +163,12 @@ class Resinas(models.Model):
     
     def __str__(self):
         return f"Resina {self.resina}"
+
+class Actividad(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    actividad = models.TextField()
+    metodo = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Actividad {self.id} por {self.user.email}"

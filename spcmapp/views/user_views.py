@@ -3,11 +3,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth import get_user_model
 from ..serializers import UserSerializer  
+from ..helpers import registrar_actividad
 
 User = get_user_model()
 class user_views:
     @api_view(['POST'])
     def create_user(request):
+        registrar_actividad(request.user, 'POST', 'Creación de usuario')
         if request.method == 'POST':
             serializer = UserSerializer(data=request.data)
             if serializer.is_valid():
@@ -33,6 +35,7 @@ class user_views:
 
     @api_view(['PUT'])
     def update_user(request, user_id):
+        registrar_actividad(request.user, 'PUT', 'Actualizar usuario' + str(user_id))
         try:
             user = User.objects.get(id=user_id, is_active=True)
         except User.DoesNotExist:
@@ -47,6 +50,7 @@ class user_views:
 
     @api_view(['DELETE'])
     def delete_user(request, user_id):
+        registrar_actividad(request.user, 'DELETE', 'Eliminar usuario' + str(user_id))
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:

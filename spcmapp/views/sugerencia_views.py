@@ -1,10 +1,11 @@
-from ..serializers import SugerenciaSerializer
-from ..models import Sugerencias
+from ..serializers import SugerenciaSerializer, ActividadSerializer
+from ..models import Sugerencias, Actividad
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.generics import ListAPIView
 from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -62,3 +63,9 @@ class SugerenciaDetailAPIView(APIView):
         sugerencia = self.get_object(pk, request.user)
         sugerencia.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ActividadListView(APIView):
+    def get(self, request):
+        actividades = Actividad.objects.all()  
+        serializer = ActividadSerializer(actividades, many=True)  
+        return Response(serializer.data, status=status.HTTP_200_OK)

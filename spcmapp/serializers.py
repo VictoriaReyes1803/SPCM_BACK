@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 from django.contrib.auth.hashers import make_password
-from .models import User, Producto_maquina, Producto, Maquina, Reporte, Sugerencias, Formatos, Resinas
+from .models import User, Producto_maquina, Producto, Maquina, Reporte, Sugerencias, Formatos, Resinas, Actividad
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +34,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 class MaquinaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maquina
-        fields = ['id', 'maquina', 'estado', 'Formato']
+        fields = ['id', 'maquina', 'estado', 'Formato', 'planta']
         
         
 class ProductoMaquinaSerializer(serializers.ModelSerializer):
@@ -48,6 +48,7 @@ class ProductoMaquinaSerializer(serializers.ModelSerializer):
 class ReporteSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True) 
     producto = ProductoSerializer(read_only=True)
+    maquina = MaquinaSerializer(read_only=True)
     producto_maquina = ProductoMaquinaSerializer(read_only=True)
     
     producto_id = serializers.PrimaryKeyRelatedField(
@@ -56,9 +57,12 @@ class ReporteSerializer(serializers.ModelSerializer):
     producto_maquina_id = serializers.PrimaryKeyRelatedField(
         queryset=Producto_maquina.objects.all(), write_only=True, source='producto_maquina'
     )
+    maquina_id = serializers.PrimaryKeyRelatedField(
+        queryset=Maquina.objects.all(), write_only=True, source='maquina'
+    )
     class Meta:
         model = Reporte
-        fields = ['id','user','producto','producto_id', 'producto_maquina','producto_maquina_id','is_active','ruta', 'content','fecha','formato', 'comentario']
+        fields = ['id','user','producto','producto_id', 'producto_maquina','maquina','maquina_id','producto_maquina_id','is_active','ruta', 'content','fecha', 'comentario']
         read_only_fields = ['fecha', 'user']
         
         
@@ -92,5 +96,11 @@ class FormatoSerializer(serializers.ModelSerializer):
 class ResinaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resinas
-        fields = ['codigo_interno', 'resina', 'densidad_de_bulto', 'temperatura_secado', 'tiempo_secado', 'densidad']
+        fields = ['id','codigo_interno', 'resina', 'densidad_de_bulto', 'temperatura_secado', 'tiempo_secado', 'densidad']
+        
+class ActividadSerializer(serializers.ModelSerializer):
+    usuario= UserSerializer(read_only=True)
+    class Meta:
+        model = Actividad
+        fields = ['id', 'usuario_id', 'usuario','actividad', 'metodo', 'fecha']
         

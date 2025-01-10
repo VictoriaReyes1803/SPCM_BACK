@@ -23,6 +23,7 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
+from ..helpers import registrar_actividad
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -30,7 +31,9 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     
     def perform_create(self, serializer):
+        registrar_actividad(self.request.user, 'POST', 'Creación de usuario')
         serializer.save(is_active=True)
+
 
 class LoginView(generics.GenericAPIView):
     
@@ -46,8 +49,8 @@ class LoginView(generics.GenericAPIView):
             user = authenticate(request, email=email, password=password)
         elif username:
             user = authenticate(request, username=username, password=password)
-
-
+        
+        registrar_actividad(user, 'POST', 'Inicio de sesión')
         if user is None:
             return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -59,6 +62,7 @@ class LoginView(generics.GenericAPIView):
                 'user': UserSerializer(user).data
             })
         return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+    
 
 
 class UserProfileView(APIView):
@@ -69,6 +73,7 @@ class UserProfileView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data)
     def put(self, request):
+        registrar_actividad(request.user, 'PUT', 'Actualizar perfil')
         user = request.user
         if 'password' in request.data:
             serializer = UserSerializer(user, data=request.data, partial=True)
@@ -85,6 +90,7 @@ class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        registrar_actividad(request.user, 'POST', 'Cerrar sesión')
         try:
             refresh_token = request.data.get("refresh")
             if not refresh_token:
@@ -170,6 +176,7 @@ class ResetPasswordView(generics.GenericAPIView):
             new_password = request.data.get('new_password')
             user.set_password(new_password)
             user.save()
+            registrar_actividad(user, 'POST', 'Restablecimiento de contraseña')
             messages.success(request, 'La contraseña se cambió exitosamente.')
             
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/')) 

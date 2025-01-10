@@ -20,6 +20,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from ..helpers import registrar_actividad
 from rest_framework import status
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
 
@@ -31,6 +32,7 @@ class Productos(LoginRequiredMixin, generics.ListCreateAPIView):
         return Producto.objects.filter(estado=True)  
         
     def create(self, request, *args, **kwargs):
+        registrar_actividad(request.user,'POST', 'Creación de producto')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -61,6 +63,21 @@ class Maquinaget(generics.ListAPIView):
         serializer = self.get_serializer(maquinas, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class MaquinaDetailView(generics.RetrieveAPIView):
+    queryset = Maquina.objects.filter(estado=True) 
+    serializer_class = MaquinaSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'maquina'  
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            maquina = self.get_object()
+            serializer = self.get_serializer(maquina)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Maquina.DoesNotExist:
+            return Response({'error': 'Máquina no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        
+    
 class ReporteView(generics.ListCreateAPIView):
     # view de post de reportes y get por usuario logueado
     queryset = Reporte.objects.all()
@@ -68,12 +85,14 @@ class ReporteView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
+        registrar_actividad(self.request.user,'GET', 'Obtener reportes')
         return Reporte.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     
     def create(self,  request, *args, **kwargs):
+        registrar_actividad(request.user,'POST', 'Creación de reporte')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -232,7 +251,7 @@ class DeletePDFView(APIView):
                 reporte.is_active = False
                 reporte.save()
                 # reporte.delete()
-                
+                registrar_actividad(request.user,'DELETE', 'Eliminación de reporte')
                 print(f"Reporte asociado a {file_name} desactivado de la base de datos")
             except Reporte.DoesNotExist:
                 return Response({'error': 'Reporte no encontrado'}, status=status.HTTP_404_NOT_FOUND)
@@ -268,8 +287,37 @@ class ResinaListView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
+        registrar_actividad(request.user,'POST', 'Creación de resina')
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ResinaDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Resinas.objects.all()
+    serializer_class = ResinaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        registrar_actividad(self.request.user,'GET', 'Obtener resina')
+        resina_id = self.kwargs.get('pk')
+        return Resinas.objects.get(id=resina_id)
+    
+    def put(self, request, *args, **kwargs):
+        registrar_actividad(request.user,'PUT', 'Actualización de resina')
+        resina_id = self.kwargs.get('pk')
+        resina = Resinas.objects.get(id=resina_id)
+        serializer = ResinaSerializer(resina, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        registrar_actividad(request.user,'DELETE', 'Eliminación de resina')
+        resina_id = self.kwargs.get('pk')
+        resina = Resinas.objects.get(id=resina_id)
+        resina.delete()
+        return Response({'message': 'Resina eliminada exitosamente'}, status=status.HTTP_204_NO_CONTENT)
